@@ -1,0 +1,243 @@
+/* reset.css — Reset global opinativo e acessível
+   - Coloque este arquivo antes do seu CSS de projeto
+   - Mantém :focus-visible para acessibilidade
+*/
+
+/* Box sizing universal */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove margens e paddings padrão e define comportamento de fonte ao herdar */
+:root {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Página básica */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  line-height: 1.15; /* base line-height */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-size: 16px;
+  color: inherit;
+  background: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Tipografia: remover margens padrões de headings e parágrafos */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+  line-height: 1.25;
+}
+
+/* Links: sem cor/decoração por padrão, mas mantém foco acessível */
+a {
+  color: inherit;
+  text-decoration: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+/* Mantém indicador de foco para teclado (acessibilidade) */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 3px solid Highlight; /* ajustável no projeto */
+  outline-offset: 2px;
+}
+
+/* Listas: remover marcadores e espaçamentos */
+ul,
+ol,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Imagens e mídia: sem gaps e responsivas por padrão */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-style: none;
+}
+
+/* Formulários: zerar estilos, mas herdar fonte para consistência */
+input,
+button,
+textarea,
+select {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Botões: resetar e manter cursor pointer */
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Se precisar de input[type="button"]/submit padronizados:
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  -webkit-appearance: button;
+} */
+
+/* Campos desabilitados */
+[disabled],
+[aria-disabled="true"] {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Tabelas: limpar espaçamento */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Figcaption e figure */
+figure {
+  margin: 0;
+}
+figcaption {
+  margin: 0;
+}
+
+/* Small print */
+small {
+  font-size: 100%;
+}
+
+/* SVG buttons and clickable icons: remover overflow e alinhamento */
+svg {
+  vertical-align: middle;
+}
+
+/* Cursor de textos selecionáveis */
+::selection {
+  background-color: Highlight;
+  color: HighlightText;
+}
+
+/* Accessibility helpers: respeitar preferência do usuário por menos animação */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Remover viés visual nativo em dispositivos móveis */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* Inputs de tipo checkbox/radio: padroniza box-sizing e remove margens estranhas */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* Links vazios ou âncoras #
+   Mantém cursor e remove decoração, útil para SPA anchors */
+a[href="#"] {
+  text-decoration: none;
+}
+
+/* Utility: força herança de cor para elementos inline-block que às vezes ganham cor */
+button,
+input,
+select,
+textarea {
+  color: inherit;
+}
+
+/* Remove outline visual no clique (mas preserve :focus-visible para teclado) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Remover estilos nativos de progress/fieldset/legend */
+progress {
+  vertical-align: baseline;
+}
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+legend {
+  padding: 0;
+}
+
+/* Webkit specific: remove o highlight de tap */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Final: pequenas garantias para elementos sem estilo */
+[hidden] {
+  display: none !important;
+}

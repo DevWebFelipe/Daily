@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Manager</title>
+    <link rel="stylesheet" href="assets/styles/index.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Gestor de rotina</h1>
+      <!-- anotações + grid de horários -->
+      <section class="top-section">
+        <div class="time-tracker">
+          <header class="list-header">
+            <h2>Horários Trabalhados</h2>
+            <button class="btn-add" data-list="time-grid">+ Adicionar</button>
+          </header>
+          <ul id="time-grid" class="task-list grid-list"></ul>
+        </div>
+        <div class="notes">
+          <h2>Anotações Rápidas</h2>
+          <textarea placeholder="Escreva aqui suas anotações..."></textarea>
+        </div>
+      </section>
+
+      <!-- Lista Tickets Semanais -->
+      <section class="list-section">
+        <header class="list-header">
+          <h2>Tickets Semanais</h2>
+          <button class="btn-add" data-list="weekly-tickets">
+            + Adicionar
+          </button>
+        </header>
+        <ul id="weekly-tickets" class="task-list"></ul>
+      </section>
+
+      <!-- Revisão de Paths -->
+      <section class="list-section">
+        <header class="list-header">
+          <h2>Revisão de Paths</h2>
+          <button class="btn-add" data-list="review-paths">+ Adicionar</button>
+        </header>
+        <ul id="review-paths" class="task-list"></ul>
+      </section>
+
+      <!-- Revisão de OS -->
+      <section class="list-section">
+        <header class="list-header">
+          <h2>Revisão de OS</h2>
+          <button class="btn-add" data-list="review-os">+ Adicionar</button>
+        </header>
+        <ul id="review-os" class="task-list"></ul>
+      </section>
+
+      <!-- Ajuda Interna -->
+      <section class="list-section">
+        <header class="list-header">
+          <h2>Ajuda Interna</h2>
+          <button class="btn-add" data-list="internal-help">+ Adicionar</button>
+        </header>
+        <ul id="internal-help" class="task-list"></ul>
+      </section>
+
+      <!-- Tickets do dia anterior -->
+      <section class="list-section">
+        <header class="list-header">
+          <h2>Tickets do Dia Anterior</h2>
+          <button class="btn-add" data-list="previous-tickets">
+            + Adicionar
+          </button>
+        </header>
+        <ul id="previous-tickets" class="task-list"></ul>
+      </section>
+
+      <button id="btn-clear" class="btn-clear">Limpar Listas Diárias</button>
+    </main>
+
+    <script src="assets/scripts/index.js"></script>
+  </body>
+</html>

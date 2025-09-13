@@ -1,0 +1,97 @@
+.list-section,
+.time-tracker {
+  background: var(--color-bg-alt);
+  padding: var(--spacing);
+  border-radius: var(--radius-md);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing);
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  gap: 1rem;
+}
+
+.task-item select {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.25rem 0.5rem;
+}
+
+.task-item .description {
+  flex: 1;
+}
+
+.task-item button {
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.task-item button:hover {
+  background: darkred;
+}
+
+.btn-add {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.btn-add:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Grid de horários */
+.grid-list .task-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr auto;
+  gap: 1rem;
+}
+
+.grid-list input {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.25rem 0.5rem;
+}
+
+/* Botão limpar */
+.btn-clear {
+  background: var(--color-danger);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-top: 2rem;
+  align-self: center;
+}
+.btn-clear:hover {
+  background: darkred;
+}

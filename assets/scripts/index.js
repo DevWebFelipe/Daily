@@ -1,210 +1,182 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const addButtons = document.querySelectorAll(".btn-add")
-  const clearButton = document.getElementById("btn-clear")
-  const notes = document.querySelector("textarea")
+// Seletores principais
+const addButtons = document.querySelectorAll(".btn-add")
+const notes = document.querySelector(".notes textarea")
+const lists = document.querySelectorAll(".task-list")
 
-  // carregar dados salvos
-  loadData()
-
-  addButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const listId = btn.dataset.list
-      const ul = document.getElementById(listId)
-
-      if (listId === "time-grid") {
-        addTimeRow(ul)
-      } else if (listId === "weekly-tickets") {
-        addWeeklyTicket(ul)
-      } else {
-        addGenericItem(ul)
-      }
-      saveData()
-    })
-  })
-
-  clearButton.addEventListener("click", () => {
-    const listsToClear = [
-      "review-paths",
-      "review-os",
-      "internal-help",
-      "previous-tickets",
-      "time-grid",
-    ]
-    listsToClear.forEach((id) => {
-      document.getElementById(id).innerHTML = ""
-    })
-    notes.value = ""
-    saveData()
-  })
-
-  // salvar notas em tempo real
-  notes.addEventListener("input", saveData)
-})
-
-let weeklyCounter = 1
-
-/* --------- Funções de adicionar --------- */
-function addWeeklyTicket(ul, data = null) {
-  const li = document.createElement("li")
-  li.className = "task-item"
-
-  const select = document.createElement("select")
-  ;["Aguardando", "Em andamento", "Finalizado"].forEach((opt) => {
-    const option = document.createElement("option")
-    option.value = opt
-    option.textContent = opt
-    if (data && data.status === opt) option.selected = true
-    select.appendChild(option)
-  })
-
-  const description = document.createElement("input")
-  description.type = "text"
-  description.className = "description"
-  description.value = data ? data.text : `Ticket #${weeklyCounter}`
-  description.addEventListener("input", saveData)
-
-  const deleteBtn = document.createElement("button")
-  deleteBtn.textContent = "Excluir"
-  deleteBtn.addEventListener("click", () => {
-    li.remove()
-    saveData()
-  })
-
-  li.appendChild(select)
-  li.appendChild(description)
-  li.appendChild(deleteBtn)
-  ul.appendChild(li)
-
-  if (!data) weeklyCounter++
-}
-
-function addGenericItem(ul, data = null) {
-  const li = document.createElement("li")
-  li.className = "task-item"
-
-  const description = document.createElement("input")
-  description.type = "text"
-  description.className = "description"
-  description.placeholder = "Digite aqui..."
-  description.value = data ? data.text : ""
-  description.addEventListener("input", saveData)
-
-  const deleteBtn = document.createElement("button")
-  deleteBtn.textContent = "Excluir"
-  deleteBtn.addEventListener("click", () => {
-    li.remove()
-    saveData()
-  })
-
-  li.appendChild(description)
-  li.appendChild(deleteBtn)
-  ul.appendChild(li)
-}
-
-function addTimeRow(ul, data = null) {
-  const li = document.createElement("li")
-  li.className = "task-item"
-
-  const start = document.createElement("input")
-  start.type = "time"
-  start.value = data ? data.start : ""
-  start.addEventListener("input", saveData)
-
-  const end = document.createElement("input")
-  end.type = "time"
-  end.value = data ? data.end : ""
-  end.addEventListener("input", saveData)
-
-  const task = document.createElement("input")
-  task.type = "text"
-  task.placeholder = "Tarefa executada"
-  task.value = data ? data.task : ""
-  task.addEventListener("input", saveData)
-
-  const deleteBtn = document.createElement("button")
-  deleteBtn.textContent = "Excluir"
-  deleteBtn.addEventListener("click", () => {
-    li.remove()
-    saveData()
-  })
-
-  li.appendChild(start)
-  li.appendChild(end)
-  li.appendChild(task)
-  li.appendChild(deleteBtn)
-
-  ul.appendChild(li)
-}
-
-/* --------- Local Storage --------- */
+// Função para salvar no localStorage
 function saveData() {
   const data = {
-    weeklyTickets: [],
-    reviewPaths: [],
-    reviewOs: [],
-    internalHelp: [],
-    previousTickets: [],
-    timeGrid: [],
-    notes: document.querySelector("textarea").value,
+    notes: notes.value,
+    lists: {},
   }
 
-  document.querySelectorAll("#weekly-tickets .task-item").forEach((li) => {
-    data.weeklyTickets.push({
-      status: li.querySelector("select").value,
-      text: li.querySelector("input.description").value,
+  lists.forEach((list) => {
+    const items = []
+    list.querySelectorAll("li").forEach((li) => {
+      const obj = {}
+      if (list.id === "weekly-tickets") {
+        obj.status = li.querySelector("select").value
+        obj.text = li.querySelector("input").value
+      } else if (list.id === "time-grid") {
+        obj.start = li.querySelector(".start").value
+        obj.end = li.querySelector(".end").value
+        obj.task = li.querySelector(".task").value
+      } else {
+        obj.text = li.querySelector("input").value
+      }
+      items.push(obj)
     })
-  })
-
-  document.querySelectorAll("#review-paths .task-item").forEach((li) => {
-    data.reviewPaths.push({ text: li.querySelector("input").value })
-  })
-
-  document.querySelectorAll("#review-os .task-item").forEach((li) => {
-    data.reviewOs.push({ text: li.querySelector("input").value })
-  })
-
-  document.querySelectorAll("#internal-help .task-item").forEach((li) => {
-    data.internalHelp.push({ text: li.querySelector("input").value })
-  })
-
-  document.querySelectorAll("#previous-tickets .task-item").forEach((li) => {
-    data.previousTickets.push({ text: li.querySelector("input").value })
-  })
-
-  document.querySelectorAll("#time-grid .task-item").forEach((li) => {
-    data.timeGrid.push({
-      start: li.querySelector("input[type='time']:nth-child(1)").value,
-      end: li.querySelector("input[type='time']:nth-child(2)").value,
-      task: li.querySelector("input[type='text']").value,
-    })
+    data.lists[list.id] = items
   })
 
   localStorage.setItem("dailyData", JSON.stringify(data))
 }
 
+// Função para carregar do localStorage
 function loadData() {
   const saved = localStorage.getItem("dailyData")
   if (!saved) return
-
   const data = JSON.parse(saved)
 
-  const weeklyUl = document.getElementById("weekly-tickets")
-  data.weeklyTickets.forEach((item) => addWeeklyTicket(weeklyUl, item))
+  notes.value = data.notes || ""
 
-  const reviewPathsUl = document.getElementById("review-paths")
-  data.reviewPaths.forEach((item) => addGenericItem(reviewPathsUl, item))
-
-  const reviewOsUl = document.getElementById("review-os")
-  data.reviewOs.forEach((item) => addGenericItem(reviewOsUl, item))
-
-  const internalHelpUl = document.getElementById("internal-help")
-  data.internalHelp.forEach((item) => addGenericItem(internalHelpUl, item))
-
-  const previousUl = document.getElementById("previous-tickets")
-  data.previousTickets.forEach((item) => addGenericItem(previousUl, item))
-
-  const timeUl = document.getElementById("time-grid")
-  data.timeGrid.forEach((item) => addTimeRow(timeUl, item))
-
-  document.querySelector("textarea").value = data.notes || ""
+  for (const [id, items] of Object.entries(data.lists)) {
+    const list = document.getElementById(id)
+    if (!list) continue
+    items.forEach((item) => {
+      if (id === "weekly-tickets") {
+        addWeeklyTicket(list, item.text, item.status)
+      } else if (id === "time-grid") {
+        addTimeRow(list, item.start, item.end, item.task)
+      } else {
+        addSimpleItem(list, item.text)
+      }
+    })
+  }
 }
+
+// --- Adicionar itens ---
+function addWeeklyTicket(list, text = "", status = "Aguardando") {
+  const index = list.children.length + 1
+
+  const li = document.createElement("li")
+  li.innerHTML = `
+    <select>
+      <option value="Aguardando">Aguardando</option>
+      <option value="Em andamento">Em andamento</option>
+      <option value="Finalizado">Finalizado</option>
+    </select>
+    <input type="text" value="${text || `${index} - `}" />
+    <button class="btn-delete">✖</button>
+  `
+
+  const select = li.querySelector("select")
+  select.value = status
+  applyStatusStyle(li, status)
+
+  select.addEventListener("change", () => {
+    applyStatusStyle(li, select.value)
+    saveData()
+  })
+
+  li.querySelector("input").addEventListener("input", saveData)
+
+  li.querySelector(".btn-delete").addEventListener("click", () => {
+    li.remove()
+    updateWeeklyIndices(list)
+    saveData()
+  })
+
+  list.appendChild(li)
+  saveData()
+}
+
+function addSimpleItem(list, text = "") {
+  const li = document.createElement("li")
+  li.innerHTML = `
+    <input type="text" value="${text}" />
+    <button class="btn-delete">✖</button>
+  `
+
+  li.querySelector("input").addEventListener("input", saveData)
+  li.querySelector(".btn-delete").addEventListener("click", () => {
+    li.remove()
+    saveData()
+  })
+
+  list.appendChild(li)
+  saveData()
+}
+
+function addTimeRow(list, start = "", end = "", task = "") {
+  const li = document.createElement("li")
+  li.innerHTML = `
+    <input type="time" class="start" value="${start}" />
+    <input type="time" class="end" value="${end}" />
+    <input type="text" class="task" value="${task}" placeholder="Tarefa executada" />
+    <button class="btn-delete">✖</button>
+  `
+
+  li.querySelectorAll("input").forEach((inp) => {
+    inp.addEventListener("input", saveData)
+  })
+
+  li.querySelector(".btn-delete").addEventListener("click", () => {
+    li.remove()
+    saveData()
+  })
+
+  list.appendChild(li)
+  saveData()
+}
+
+// Atualizar índices da lista semanal
+function updateWeeklyIndices(list) {
+  ;[...list.children].forEach((li, i) => {
+    const input = li.querySelector("input")
+    if (input) {
+      const parts = input.value.split(" - ")
+      input.value = `${i + 1} - ${parts.slice(1).join(" - ")}`
+    }
+  })
+}
+
+// Estilo por status
+function applyStatusStyle(li, status) {
+  li.classList.remove("status-progress", "status-done")
+  if (status === "Em andamento") {
+    li.classList.add("status-progress")
+  }
+  if (status === "Finalizado") {
+    li.classList.add("status-done")
+  }
+}
+
+// Limpar listas exceto semanal
+function clearDailyLists() {
+  document.querySelectorAll(".task-list").forEach((list) => {
+    if (list.id !== "weekly-tickets") list.innerHTML = ""
+  })
+  notes.value = ""
+  saveData()
+}
+
+// Eventos de adicionar
+addButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const list = document.getElementById(btn.dataset.list)
+    if (btn.dataset.list === "weekly-tickets") addWeeklyTicket(list)
+    else if (btn.dataset.list === "time-grid") addTimeRow(list)
+    else addSimpleItem(list)
+  })
+})
+
+// Botão global limpar
+const clearBtn = document.createElement("button")
+clearBtn.textContent = "Limpar Listas Diárias"
+clearBtn.className = "btn-clear"
+clearBtn.addEventListener("click", clearDailyLists)
+document.querySelector("main").appendChild(clearBtn)
+
+// Inicialização
+loadData()

@@ -1,8 +1,46 @@
+/* ===========================
+   Variáveis globais
+=========================== */
+:root {
+  --color-bg: #121212;
+  --color-surface: #1e1e1e;
+  --color-border: #333;
+  --color-text: #f1f1f1;
+  --color-accent: #3b82f6;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --spacing: 1rem;
+
+  --font-body: "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+/* ===========================
+   Reset
+=========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===========================
+   Estrutura
+=========================== */
 body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  margin: 0;
 }
 
 .container {
@@ -15,29 +53,47 @@ body {
   gap: 2rem;
 }
 
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+/* ===========================
+   Top Section (Anotações + Horários)
+=========================== */
 .top-section {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-
-  & .notes {
-    & h2 {
-      margin-bottom: 1rem;
-      margin-left: 0.2rem;
-    }
-    width: 100%;
-  }
-
-  & .time-tracker {
-    width: 100%;
-
-    & .list-header {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
 }
 
+.top-section .notes {
+  width: 100%;
+}
+
+.top-section .notes h2 {
+  margin-bottom: 1rem;
+  margin-left: 0.2rem;
+}
+
+.top-section .time-tracker {
+  width: 100%;
+}
+
+.top-section .time-tracker .list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ===========================
+   Textarea
+=========================== */
 textarea {
   width: 100%;
   min-height: 150px;
@@ -46,4 +102,173 @@ textarea {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--spacing);
+  resize: vertical;
+}
+
+/* ===========================
+   Listas
+=========================== */
+.list-section {
+  background: var(--color-surface);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ===========================
+   Itens da lista
+=========================== */
+.task-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #222;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  transition: background 0.2s ease, border 0.2s ease;
+}
+
+.task-list li input[type="text"],
+.task-list li input[type="time"],
+.task-list li select {
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  flex: 1;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.task-list li input[type="text"]:focus,
+.task-list li input[type="time"]:focus,
+.task-list li select:focus,
+.notes textarea:focus {
+  outline: 2px solid var(--color-accent);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ===========================
+   Botões
+=========================== */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.btn-add {
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-add:hover {
+  background: #2563eb;
+}
+
+.btn-delete {
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.btn-delete:hover {
+  color: #f87171;
+}
+
+.btn-clear {
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-clear:hover {
+  background: #2563eb;
+}
+
+/* ===========================
+   Status (Tickets Semanais)
+=========================== */
+.task-list li.status-progress {
+  background: rgba(0, 123, 255, 0.15);
+  border-left: 4px solid #339af0;
+}
+
+.task-list li.status-done {
+  background: rgba(40, 167, 69, 0.15);
+  border-left: 4px solid #51cf66;
+}
+
+/* ===========================
+   Grid de horários
+=========================== */
+.grid-list li {
+  display: grid;
+  grid-template-columns: 120px 120px 1fr auto;
+  gap: 0.5rem;
+}
+
+.grid-list li input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
+/* ===========================
+   Ajustes específicos - Tickets Semanais
+=========================== */
+#weekly-tickets li {
+  display: grid;
+  grid-template-columns: 140px 1fr auto; /* Combo fixo / Input flexível / Botão */
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Select menor e legível no tema escuro */
+#weekly-tickets select {
+  min-width: 130px;
+  max-width: 140px;
+  background: #2a2a2a;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem;
+  font-size: 0.9rem;
+}
+
+/* Opções dentro do select */
+#weekly-tickets select option {
+  background: #2a2a2a;
+  color: var(--color-text);
+  padding: 0.4rem;
+}
+
+/* Input ocupa todo o espaço livre */
+#weekly-tickets input[type="text"] {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 0.95rem;
 }

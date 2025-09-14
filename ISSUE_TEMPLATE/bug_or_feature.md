@@ -1,11 +1,10 @@
 ---
-
 name: "Reportar Bug ou Sugerir Feature"
 about: "Use este template para reportar bugs ou sugerir melhorias"
-title: "\[BUG] ou \[FEATURE] Descrição curta"
+title: "[BUG] ou [FEATURE] Descrição curta"
 labels: ""
 assignees: ""
--------------
+---
 
 ## 📋 Descrição
 
@@ -17,10 +16,10 @@ assignees: ""
 
 - **Passos para reproduzir:**
 
-  1. Vá para '...'
-  2. Clique em '...'
-  3. Role até '...'
-  4. Veja o erro
+1. Vá para '...'
+2. Clique em '...'
+3. Role até '...'
+4. Veja o erro
 
 - **Comportamento esperado:**
 
@@ -31,10 +30,9 @@ assignees: ""
   > Se possível, adicione imagens para ajudar na explicação.
 
 - **Ambiente:**
-
-  - Navegador: \[ex: Chrome 140]
-  - Sistema: \[ex: Windows 10]
-  - Versão do projeto: \[tag ou commit]
+- Navegador: [ex: Chrome 140]
+- Sistema: [ex: Windows 10]
+- Versão do projeto: [tag ou commit]
 
 ---
 
@@ -49,7 +47,6 @@ assignees: ""
   > Qual vantagem isso trará para os usuários?
 
 - **Exemplo de uso:**
-
   > Se possível, descreva como a funcionalidade seria usada.
 
 ---
@@ -58,5 +55,3 @@ assignees: ""
 
 - [ ] Procurei issues existentes para evitar duplicação
 - [ ] Forneci informações suficientes para reproduzir/avaliar
-
----

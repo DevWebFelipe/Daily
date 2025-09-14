@@ -1,11 +1,10 @@
 ---
-
 name: "Pull Request"
 about: "Use este template para propor alterações no projeto"
-title: "\[TIPO] Descrição curta"
+title: "[TIPO] Descrição curta"
 labels: ""
 assignees: ""
--------------
+---
 
 ## 📋 Descrição
 
@@ -48,5 +47,3 @@ assignees: ""
 ## 📌 Observações adicionais
 
 > Qualquer detalhe extra relevante para revisão.
-
----

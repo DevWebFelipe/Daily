@@ -154,12 +154,13 @@ function addTimeRow(list, start = "", end = "", task = "") {
   taskArea.addEventListener("input", () => {
     autoResizeTextarea(taskArea)
     saveData()
+    validateTimeGrid(list) // validação em tempo real na área de texto
   })
 
   li.querySelectorAll("input").forEach((inp) => {
     inp.addEventListener("input", () => {
       saveData()
-      validateTimeGrid(list)
+      validateTimeGrid(list) // validação em tempo real dos inputs
     })
   })
 
@@ -187,12 +188,30 @@ function addTimeGrid(list) {
   }
 }
 
-// ---------- Validação da grade de horários ----------
+// ---------- Validação da gride de tempo ----------
 function validateTimeGrid(list) {
   const rows = Array.from(list.querySelectorAll("li"))
-  rows.forEach((li) => li.classList.remove("invalid-time", "gap-time"))
+  rows.forEach((li) =>
+    li.classList.remove("invalid-time", "gap-time", "outside-time")
+  )
+  rows.forEach((li) => (li.title = ""))
 
   let lastEndMinutes = null
+  const today = new Date()
+  const dayOfWeek = today.getDay() // 0=Dom, 1=Seg ... 5=Sex
+
+  // definir horários de trabalho
+  const workingHours = {
+    default: [
+      { start: 8 * 60, end: 12 * 60 },
+      { start: 13 * 60, end: 18 * 60 },
+    ],
+    friday: [
+      { start: 8 * 60, end: 12 * 60 },
+      { start: 13 * 60, end: 17 * 60 },
+    ],
+  }
+  const ranges = dayOfWeek === 5 ? workingHours.friday : workingHours.default
 
   rows.forEach((li, idx) => {
     const startVal = li.querySelector(".start").value
@@ -201,14 +220,32 @@ function validateTimeGrid(list) {
     const startMin = timeToMinutes(startVal)
     const endMin = timeToMinutes(endVal)
 
+    // 1. fim < início
     if (startMin !== null && endMin !== null && endMin < startMin) {
       li.classList.add("invalid-time")
+      li.title = "A hora de término não pode ser anterior à hora de início."
     }
 
+    // 2. lacuna entre tarefas
     if (lastEndMinutes !== null && startMin !== null) {
       if (startMin > lastEndMinutes) {
         li.classList.add("gap-time")
-        if (idx - 1 >= 0) rows[idx - 1].classList.add("gap-time")
+        li.title = "Há uma lacuna entre as tarefas."
+        if (idx - 1 >= 0) {
+          rows[idx - 1].classList.add("gap-time")
+          rows[idx - 1].title = "Há uma lacuna entre as tarefas."
+        }
+      }
+    }
+
+    // 3. fora do horário de trabalho
+    if (startMin !== null && endMin !== null) {
+      const insideRange = ranges.some(
+        (r) => startMin >= r.start && endMin <= r.end
+      )
+      if (!insideRange) {
+        li.classList.add("outside-time")
+        li.title = "O horário está fora do expediente."
       }
     }
 

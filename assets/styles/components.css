@@ -95,3 +95,20 @@
 .btn-clear:hover {
   background: darkred;
 }
+
+/* Mantém a aparência parecida com o input */
+.task-list textarea.task,
+.time-grid textarea.task {
+  width: 100%;
+  min-height: 32px; /* altura inicial */
+  resize: none; /* impede redimensionar manualmente */
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  overflow: hidden; /* evita scroll interno */
+}

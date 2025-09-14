@@ -15,6 +15,12 @@ const timeToMinutes = (hhmm) => {
   return h * 60 + m
 }
 
+// auto-resize de textarea
+function autoResizeTextarea(textarea) {
+  textarea.style.height = "auto"
+  textarea.style.height = textarea.scrollHeight + "px"
+}
+
 // ---------- Persistência ----------
 function saveData() {
   const data = { notes: notes.value, lists: {} }
@@ -31,7 +37,9 @@ function saveData() {
         obj.end = li.querySelector(".end").value
         obj.task = li.querySelector(".task").value
       } else {
-        obj.text = li.querySelector("input[type='text']").value
+        const txt =
+          li.querySelector("textarea") || li.querySelector("input[type='text']")
+        obj.text = txt.value
       }
       items.push(obj)
     })
@@ -102,22 +110,34 @@ function addSimpleItem(list, text = "") {
   const li = document.createElement("li")
   li.className = "task-item"
 
-  li.innerHTML = `
-    <input type="text" value="${text}" />
-    <button class="btn-delete" title="Excluir">✖</button>
-  `
+  const textarea = document.createElement("textarea")
+  textarea.value = text
+  textarea.placeholder = "Descrição"
+  textarea.className = "task"
+  autoResizeTextarea(textarea)
 
-  li.querySelector("input[type='text']").addEventListener("input", saveData)
-  li.querySelector(".btn-delete").addEventListener("click", () => {
+  textarea.addEventListener("input", () => {
+    autoResizeTextarea(textarea)
+    saveData()
+  })
+
+  const del = document.createElement("button")
+  del.textContent = "✖"
+  del.className = "btn-delete"
+  del.title = "Excluir"
+
+  del.addEventListener("click", () => {
     li.remove()
     saveData()
   })
 
+  li.appendChild(textarea)
+  li.appendChild(del)
   list.appendChild(li)
   saveData()
 }
 
-// Adiciona uma linha de horário (com listeners)
+// adiciona uma linha de horário (com textarea na descrição)
 function addTimeRow(list, start = "", end = "", task = "") {
   const li = document.createElement("li")
   li.className = "task-item"
@@ -125,11 +145,17 @@ function addTimeRow(list, start = "", end = "", task = "") {
   li.innerHTML = `
     <input type="time" class="start" value="${start}" />
     <input type="time" class="end" value="${end}" />
-    <input type="text" class="task" value="${task}" placeholder="Tarefa executada" />
+    <textarea class="task" placeholder="Tarefa executada">${task}</textarea>
     <button class="btn-delete" title="Excluir">✖</button>
   `
 
-  // listeners: salvar + validar ao editar
+  const taskArea = li.querySelector(".task")
+  autoResizeTextarea(taskArea)
+  taskArea.addEventListener("input", () => {
+    autoResizeTextarea(taskArea)
+    saveData()
+  })
+
   li.querySelectorAll("input").forEach((inp) => {
     inp.addEventListener("input", () => {
       saveData()
@@ -148,16 +174,13 @@ function addTimeRow(list, start = "", end = "", task = "") {
   validateTimeGrid(list)
 }
 
-// Função que garante o comportamento especial do botão de horários
 function addTimeGrid(list) {
   const items = list.querySelectorAll("li")
   if (items.length === 0) {
-    // primeira vez: adiciona 3 blocos padrão
     addTimeRow(list, "08:00", "08:10", "")
     addTimeRow(list, "08:10", "08:25", "Reunião diária")
     addTimeRow(list, "08:25", "", "")
   } else {
-    // pega último end disponível (se vazio, usa '')
     const lastItem = list.querySelector("li:last-child")
     const lastEnd = lastItem.querySelector(".end").value || ""
     addTimeRow(list, lastEnd, "", "")
@@ -178,35 +201,29 @@ function validateTimeGrid(list) {
     const startMin = timeToMinutes(startVal)
     const endMin = timeToMinutes(endVal)
 
-    // 1) horário inválido (end antes do start)
     if (startMin !== null && endMin !== null && endMin < startMin) {
       li.classList.add("invalid-time")
     }
 
-    // 2) gap entre o lastEnd e o start atual (apenas se lastEnd existe)
     if (lastEndMinutes !== null && startMin !== null) {
       if (startMin > lastEndMinutes) {
-        // marca o atual e o anterior (se existir)
         li.classList.add("gap-time")
         if (idx - 1 >= 0) rows[idx - 1].classList.add("gap-time")
       }
     }
 
-    // atualiza lastEndMinutes: preferir end se existir, senão manter lastEndMinutes
     if (endMin !== null) lastEndMinutes = endMin
     else if (startMin !== null && lastEndMinutes === null) {
-      // se não existia lastEnd e existe apenas start, usar start como referência
       lastEndMinutes = startMin
     }
   })
 }
 
-// ---------- Índices semanais (corrige prefixo com regex) ----------
+// ---------- Índices semanais ----------
 function updateWeeklyIndices(list) {
   ;[...list.children].forEach((li, i) => {
     const input = li.querySelector("input[type='text']")
     if (input) {
-      // remove prefixo numérico atual (ex: "12 - ") e adiciona o novo índice
       const newText = input.value.replace(/^\s*\d+\s*-\s*/, "")
       input.value = `${i + 1} - ${newText}`
     }
@@ -236,13 +253,11 @@ addButtons.forEach((btn) => {
     const list = document.getElementById(btn.dataset.list)
     if (!list) return
     if (btn.dataset.list === "weekly-tickets") addWeeklyTicket(list)
-    else if (btn.dataset.list === "time-grid")
-      addTimeGrid(list) // usa comportamento especial
+    else if (btn.dataset.list === "time-grid") addTimeGrid(list)
     else addSimpleItem(list)
   })
 })
 
-// cria e adiciona botão de limpar abaixo do main
 const clearBtn = document.createElement("button")
 clearBtn.textContent = "Limpar Listas Diárias"
 clearBtn.className = "btn-clear"
@@ -251,5 +266,4 @@ document.querySelector("main").appendChild(clearBtn)
 
 // ---------- Inicialização ----------
 loadData()
-// importante: validar após carregar (assim as linhas salvas ficam destacadas conforme necessário)
 validateTimeGrid(timeGrid)

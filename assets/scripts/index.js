@@ -104,6 +104,7 @@ function addWeeklyTicket(list, text = "", status = "Aguardando") {
 
   list.appendChild(li)
   saveData()
+  input.focus()
 }
 
 function addSimpleItem(list, text = "") {
@@ -135,6 +136,7 @@ function addSimpleItem(list, text = "") {
   li.appendChild(del)
   list.appendChild(li)
   saveData()
+  textarea.focus()
 }
 
 // adiciona uma linha de horário (com textarea na descrição)
@@ -149,6 +151,7 @@ function addTimeRow(list, start = "", end = "", task = "") {
     <button class="btn-delete" title="Excluir">✖</button>
   `
 
+  const taskStart = li.querySelector(".start")
   const taskArea = li.querySelector(".task")
   autoResizeTextarea(taskArea)
   taskArea.addEventListener("input", () => {
@@ -173,6 +176,7 @@ function addTimeRow(list, start = "", end = "", task = "") {
   list.appendChild(li)
   saveData()
   validateTimeGrid(list)
+  taskStart.focus()
 }
 
 function addTimeGrid(list) {

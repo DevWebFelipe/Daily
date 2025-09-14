@@ -350,3 +350,9 @@ button {
 .task-list li.outside-time {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
+
+.task:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+  background: rgba(255, 255, 255, 0.05);
+}

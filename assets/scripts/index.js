@@ -283,7 +283,6 @@ function clearDailyLists() {
   document.querySelectorAll(".task-list").forEach((list) => {
     if (list.id !== "weekly-tickets") list.innerHTML = ""
   })
-  notes.value = ""
   saveData()
   validateTimeGrid(timeGrid)
 }

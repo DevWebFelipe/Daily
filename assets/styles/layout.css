@@ -272,3 +272,42 @@ button {
   color: var(--color-text);
   font-size: 0.95rem;
 }
+
+/* Horário inválido (fim antes do início) */
+.invalid-time {
+  background-color: rgba(200, 60, 60, 0.15);
+  border-left: 3px solid rgba(200, 60, 60, 0.6);
+}
+
+/* Horários furados */
+.gap-time {
+  background-color: rgba(255, 165, 0, 0.12);
+  border-left: 3px solid rgba(255, 165, 0, 0.5);
+}
+
+/* ===========================
+   Destaques de validação (maior especificidade)
+=========================== */
+
+/* Horário inválido (fim antes do início) */
+.task-list li.invalid-time,
+.grid-list li.invalid-time {
+  /* usa 'background' para sobrescrever a regra anterior */
+  background: rgba(200, 60, 60, 0.15);
+  border-left: 3px solid rgba(200, 60, 60, 0.6);
+}
+
+/* Horários furados (gap) */
+.task-list li.gap-time,
+.grid-list li.gap-time {
+  background: rgba(255, 165, 0, 0.12);
+  border-left: 3px solid rgba(255, 165, 0, 0.5);
+}
+
+/* opcional: forçar contraste no texto para melhor leitura */
+.task-list li.invalid-time input,
+.task-list li.invalid-time .task,
+.task-list li.gap-time input,
+.task-list li.gap-time .task {
+  color: var(--color-text);
+}

@@ -284,6 +284,52 @@ function validateTimeGrid(list) {
       lastEndMinutes = startMin
     }
   })
+
+  // ---- Validações de limites ----
+  const first = rows[0]
+  const last = rows[rows.length - 1]
+  if (first) {
+    const firstStart = timeToMinutes(first.querySelector(".start").value)
+    if (firstStart > ranges[0].start) {
+      first.classList.add("gap-time")
+      first.title = "As tarefas devem começar às 08:00."
+    }
+  }
+
+  // fim da manhã (12:00)
+  const lastMorning = rows
+    .filter((li) => timeToMinutes(li.querySelector(".end").value) <= 720)
+    .pop()
+  if (lastMorning) {
+    const endVal = timeToMinutes(lastMorning.querySelector(".end").value)
+    if (endVal < 720) {
+      lastMorning.classList.add("gap-time")
+      lastMorning.title = "A manhã deve ir até 12:00."
+    }
+  }
+
+  // início da tarde (13:00)
+  const firstAfternoon = rows.find(
+    (li) => timeToMinutes(li.querySelector(".start").value) >= 780
+  )
+  if (firstAfternoon) {
+    const startVal = timeToMinutes(firstAfternoon.querySelector(".start").value)
+    if (startVal > 780) {
+      firstAfternoon.classList.add("gap-time")
+      firstAfternoon.title = "A tarde deve começar às 13:00."
+    }
+  }
+
+  if (last) {
+    const lastEnd = timeToMinutes(last.querySelector(".end").value)
+    const expectedEnd = ranges[ranges.length - 1].end
+    if (lastEnd < expectedEnd) {
+      last.classList.add("gap-time")
+      last.title = `O expediente deve ir até ${String(
+        Math.floor(expectedEnd / 60)
+      ).padStart(2, "0")}:${String(expectedEnd % 60).padStart(2, "0")}.`
+    }
+  }
 }
 
 // ---------- Índices semanais ----------

@@ -152,19 +152,24 @@ function addTimeRow(list, start = "", end = "", task = "") {
   `
 
   const taskStart = li.querySelector(".start")
+  const taskEnd = li.querySelector(".end")
   const taskArea = li.querySelector(".task")
+
   autoResizeTextarea(taskArea)
+
   taskArea.addEventListener("input", () => {
     autoResizeTextarea(taskArea)
     saveData()
-    validateTimeGrid(list) // validação em tempo real na área de texto
   })
 
   li.querySelectorAll("input").forEach((inp) => {
-    inp.addEventListener("input", () => {
-      saveData()
-      validateTimeGrid(list) // validação em tempo real dos inputs
-    })
+    inp.addEventListener("input", saveData)
+  })
+
+  // só valida e reordena quando sair do campo de hora final
+  taskEnd.addEventListener("blur", () => {
+    validateTimeGrid(list)
+    saveData()
   })
 
   li.querySelector(".btn-delete").addEventListener("click", () => {
@@ -175,7 +180,6 @@ function addTimeRow(list, start = "", end = "", task = "") {
 
   list.appendChild(li)
   saveData()
-  validateTimeGrid(list)
   taskStart.focus()
 }
 
@@ -192,19 +196,38 @@ function addTimeGrid(list) {
   }
 }
 
-// ---------- Validação da gride de tempo ----------
+// ---------- Reordenação e validação ----------
 function validateTimeGrid(list) {
-  const rows = Array.from(list.querySelectorAll("li"))
-  rows.forEach((li) =>
+  let rows = Array.from(list.querySelectorAll("li"))
+
+  // só ordena linhas que tenham hora inicial e final preenchidas
+  rows = rows.filter((li) => {
+    const startVal = li.querySelector(".start").value
+    const endVal = li.querySelector(".end").value
+    return startVal && endVal
+  })
+
+  // Ordenar por horário inicial
+  rows.sort((a, b) => {
+    const startA = timeToMinutes(a.querySelector(".start").value)
+    const startB = timeToMinutes(b.querySelector(".start").value)
+    return (startA || 0) - (startB || 0)
+  })
+
+  // Reaplicar em ordem
+  rows.forEach((li) => list.appendChild(li))
+
+  // Resetar classes
+  rows.forEach((li) => {
     li.classList.remove("invalid-time", "gap-time", "outside-time")
-  )
-  rows.forEach((li) => (li.title = ""))
+    li.title = ""
+  })
 
   let lastEndMinutes = null
   const today = new Date()
   const dayOfWeek = today.getDay() // 0=Dom, 1=Seg ... 5=Sex
 
-  // definir horários de trabalho
+  // horários de trabalho
   const workingHours = {
     default: [
       { start: 8 * 60, end: 12 * 60 },
@@ -230,14 +253,16 @@ function validateTimeGrid(list) {
       li.title = "A hora de término não pode ser anterior à hora de início."
     }
 
-    // 2. lacuna entre tarefas
+    // 2. lacuna entre tarefas (exceto 12h–13h = almoço)
     if (lastEndMinutes !== null && startMin !== null) {
       if (startMin > lastEndMinutes) {
-        li.classList.add("gap-time")
-        li.title = "Há uma lacuna entre as tarefas."
-        if (idx - 1 >= 0) {
-          rows[idx - 1].classList.add("gap-time")
-          rows[idx - 1].title = "Há uma lacuna entre as tarefas."
+        if (!(lastEndMinutes <= 720 && startMin >= 780)) {
+          li.classList.add("gap-time")
+          li.title = "Há uma lacuna entre as tarefas."
+          if (idx - 1 >= 0) {
+            rows[idx - 1].classList.add("gap-time")
+            rows[idx - 1].title = "Há uma lacuna entre as tarefas."
+          }
         }
       }
     }
@@ -253,8 +278,9 @@ function validateTimeGrid(list) {
       }
     }
 
-    if (endMin !== null) lastEndMinutes = endMin
-    else if (startMin !== null && lastEndMinutes === null) {
+    if (endMin !== null) {
+      lastEndMinutes = endMin
+    } else if (startMin !== null && lastEndMinutes === null) {
       lastEndMinutes = startMin
     }
   })
